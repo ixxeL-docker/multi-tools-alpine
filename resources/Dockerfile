@@ -4,7 +4,7 @@ RUN apk update --no-cache \
     && apk add curl wget --no-cache --update \
     && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
     && chmod +x ./argocd-linux-amd64 \
-    && mv ./argocd-linux-amd64/usr/local/bin/argocd \
+    && mv ./argocd-linux-amd64 /usr/local/bin/argocd \
     && curl -sLO "https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64" \
     && chmod +x ./kubectl-argo-rollouts-linux-amd64 \
     && mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts \
