@@ -2,9 +2,9 @@ FROM alpine:latest AS builder
 
 RUN apk update --no-cache \
     && apk add curl wget --no-cache --update \
-    && ARGOCD_VERSION=$(curl -sSL "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq) \
-    && curl -sSL -o /usr/local/bin/argocd "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64" \
-    && chmod +x /usr/local/bin/argocd \
+    && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
+    && chmod +x ./argocd-linux-amd64 \
+    && mv ./argocd-linux-amd64/usr/local/bin/argocd \
     && curl -sLO "https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64" \
     && chmod +x ./kubectl-argo-rollouts-linux-amd64 \
     && mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts \
