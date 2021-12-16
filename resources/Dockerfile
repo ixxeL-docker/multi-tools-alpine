@@ -38,7 +38,7 @@ LABEL maintainer="Frederic Spiers <fredspiers@gmail.com>" \
       component="CI/CD tools"
 
 ENV TZ="Europe/Paris" \
-    IMG_VERSION="1.1.0"
+    IMG_VERSION="1.2.0"
 
 COPY --from=builder /bin/oc /bin/
 COPY --from=builder /usr/local/bin/argo /usr/local/bin/kubectl-argo-rollouts /usr/local/bin/grype /usr/local/bin/jfrog /usr/local/bin/envconsul /usr/local/bin/vault /usr/local/bin/argocd /usr/local/bin/helm /usr/local/bin/kubectl /usr/local/bin/
