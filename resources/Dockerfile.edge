@@ -43,7 +43,9 @@ ENV TZ="Europe/Paris" \
 COPY --from=builder /bin/oc /bin/
 COPY --from=builder /usr/local/bin/argo /usr/local/bin/kubectl-argo-rollouts /usr/local/bin/grype /usr/local/bin/jfrog /usr/local/bin/envconsul /usr/local/bin/vault /usr/local/bin/argocd /usr/local/bin/helm /usr/local/bin/kubectl /usr/local/bin/
 
-RUN apk update --no-cache \
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+    && echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && apk update --no-cache \
     && apk upgrade --no-cache \  
     && apk add --no-cache --update \
     libc6-compat \
@@ -60,11 +62,9 @@ RUN apk update --no-cache \
     python3 \
     py3-pip \
     bind-tools \
-    util-linux \
     tzdata \
     && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
     && rm -f /var/lib/containers/storage/libpod/bolt_state.db \
     && sed -i "s/driver = \"overlay\"/driver = \"vfs\"/" /etc/containers/storage.conf \
     && pip3 install --no-cache-dir awxkit ansible-tower-cli \
-    && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    && ln -s /usr/bin/python3 /usr/bin/python
+    && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
