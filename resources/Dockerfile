@@ -62,9 +62,11 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositori
     python3 \
     py3-pip \
     bind-tools \
+    util-linux \
     tzdata \
     && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
     && rm -f /var/lib/containers/storage/libpod/bolt_state.db \
     && sed -i "s/driver = \"overlay\"/driver = \"vfs\"/" /etc/containers/storage.conf \
     && pip3 install --no-cache-dir awxkit ansible-tower-cli \
-    && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    && ln -s /usr/bin/python3 /usr/bin/python
