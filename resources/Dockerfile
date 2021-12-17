@@ -1,7 +1,7 @@
 FROM alpine:latest AS builder
 
 RUN apk update --no-cache \
-    && apk add curl wget --no-cache --update \
+    && apk add curl --no-cache --update \
     && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
     && chmod +x ./argocd-linux-amd64 \
     && mv ./argocd-linux-amd64 /usr/local/bin/argocd \
@@ -23,11 +23,11 @@ RUN apk update --no-cache \
     && chmod +x ./kubectl \
     && mv ./kubectl /usr/local/bin/kubectl \
     && VAULT_VERSION=$(curl -sSL "https://releases.hashicorp.com/vault" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
-    && wget -q "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" -O "/tmp/vault_${VAULT_VERSION}_linux_amd64.zip" \
-    && unzip "/tmp/vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin \
+    && curl -sLO "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" \
+    && unzip "./vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin \
     && ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
-    && wget -q "https://releases.hashicorp.com/envconsul/${ENVCONSUL_VERSION}/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -O "/tmp/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" \
-    && unzip "/tmp/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
+    && curl -sLO "https://releases.hashicorp.com/envconsul/${ENVCONSUL_VERSION}/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" \
+    && unzip "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
     && curl -fL "https://getcli.jfrog.io" | sh \
     && mv jfrog /usr/local/bin \
     && curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin
