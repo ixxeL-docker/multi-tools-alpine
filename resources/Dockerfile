@@ -44,7 +44,7 @@ COPY --from=builder /bin/oc /bin/
 COPY --from=builder /usr/local/bin/argo /usr/local/bin/kubectl-argo-rollouts /usr/local/bin/grype /usr/local/bin/jfrog /usr/local/bin/envconsul /usr/local/bin/vault /usr/local/bin/argocd /usr/local/bin/helm /usr/local/bin/kubectl /usr/local/bin/
 
 RUN apk update --no-cache \
-    && apk upgrade --no-cache \  
+    && apk upgrade --no-cache \
     && apk add --no-cache --update \
     libc6-compat \
     podman \
