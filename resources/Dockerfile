@@ -40,10 +40,7 @@ LABEL maintainer="Frederic Spiers <fredspiers@gmail.com>" \
       component="CI/CD tools"
 
 ENV TZ="Europe/Paris" \
-    IMG_VERSION="2.0.0" \
-    PATH="/kaniko:$PATH" \
-    SSL_CERT_DIR="/kaniko/ssl/certs" \
-    DOCKER_CONFIG="/kaniko/.docker/"
+    IMG_VERSION="2.0.0"
 
 COPY --from=kaniko /kaniko/executor /usr/local/bin/executor
 COPY --from=builder /usr/local/bin/oc \
