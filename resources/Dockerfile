@@ -41,8 +41,17 @@ LABEL maintainer="Frederic Spiers <fredspiers@gmail.com>" \
 
 ENV TZ="Europe/Paris" \
     IMG_VERSION="2.0.0"
+    
+ENV TZ="Europe/Paris" \
+    IMG_VERSION="2.0.0" \
+    PATH="/kaniko:$PATH"
 
-COPY --from=kaniko /kaniko/executor /usr/local/bin/executor
+COPY --from=kaniko /kaniko/executor \
+                   /usr/local/bin/docker-credential-gcr \
+                   /usr/local/bin/docker-credential-ecr-login \
+                   /usr/local/bin/docker-credential-acr-env \
+                   /usr/local/bin/
+
 COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/argo \
                     /usr/local/bin/kubectl-argo-rollouts \
