@@ -7,7 +7,7 @@ Repository dedicated to build Multi Tools Alpine image, which is a multi purpose
 
 This image includes `kaniko`. Kaniko requires following environment variables :
 ```Dockerfile
-- ENV PATH="/kaniko:$PATH"
-- ENV SSL_CERT_DIR="/kaniko/ssl/certs"
-- ENV DOCKER_CONFIG="/kaniko/.docker/"
+ENV PATH="/kaniko:$PATH"
+ENV SSL_CERT_DIR="/kaniko/ssl/certs"
+ENV DOCKER_CONFIG="/kaniko/.docker/"
 ```
