@@ -41,7 +41,7 @@ LABEL maintainer="Frederic Spiers <fredspiers@gmail.com>" \
 
 ENV TZ="Europe/Paris" \
     IMG_VERSION="2.0.0" \
-    PATH=/usr/local/bin:/kaniko \
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/kaniko \
     SSL_CERT_DIR=/kaniko/ssl/certs \
     DOCKER_CONFIG=/kaniko/.docker/
 
