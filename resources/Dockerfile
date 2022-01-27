@@ -74,6 +74,7 @@ RUN apk update --no-cache \
     bind-tools \
     util-linux \
     tzdata \
+    openssl \
     && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
     && rm -f /var/lib/containers/storage/libpod/bolt_state.db \
     && sed -i "s/driver = \"overlay\"/driver = \"vfs\"/" /etc/containers/storage.conf \
