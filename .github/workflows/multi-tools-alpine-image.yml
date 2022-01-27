@@ -44,7 +44,7 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     container:
-      image: ixxel/multi-tools-alpine:2.0.0-15
+      image: ixxel/multi-tools-alpine:latest
       options: --privileged
     defaults:
       run:
