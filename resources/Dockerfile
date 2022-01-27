@@ -47,7 +47,7 @@ COPY --from=kaniko /kaniko/executor /usr/local/bin/executor
 COPY --from=kaniko /kaniko/docker-credential-gcr \
                    /kaniko/docker-credential-ecr-login \
                    /kaniko/docker-credential-acr-env \
-                   /kaniko
+                   /kaniko/
 
 COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/argo \
