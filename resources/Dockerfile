@@ -38,9 +38,6 @@ FROM alpine:latest
 
 LABEL maintainer="Frederic Spiers <fredspiers@gmail.com>" \
       component="CI/CD tools"
-
-ENV TZ="Europe/Paris" \
-    IMG_VERSION="2.0.0"
     
 ENV TZ="Europe/Paris" \
     IMG_VERSION="2.0.0" \
