@@ -68,6 +68,7 @@ RUN apk update --no-cache \
     podman \
     skopeo \
     buildah \
+    img \
     git \
     wget \
     curl \
