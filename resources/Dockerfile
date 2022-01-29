@@ -3,7 +3,7 @@ FROM gcr.io/kaniko-project/executor:latest as kaniko
 FROM alpine:latest AS builder
 
 RUN apk update --no-cache \
-    && apk add curl --no-cache --update \
+    && apk add curl npm --no-cache --update \
     && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
     && chmod +x ./argocd-linux-amd64 \
     && mv ./argocd-linux-amd64 /usr/local/bin/argocd \
@@ -32,7 +32,9 @@ RUN apk update --no-cache \
     && unzip "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
     && curl -fL "https://getcli.jfrog.io" | sh \
     && mv jfrog /usr/local/bin \
-    && curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin
+    && curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin \
+    && npm install -g github-files-fetcher \
+    && fetcher --url="https://github.com/aquasecurity/trivy/tree/main/contrib" --out=/mnt
 
 FROM alpine:latest
 
@@ -56,6 +58,8 @@ COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/helm \
                     /usr/local/bin/kubectl \
                     /usr/local/bin/
+                    
+COPY --from=builder /mnt/contrib ./contrib
                     
 RUN apk update --no-cache \
     && apk upgrade --no-cache \
