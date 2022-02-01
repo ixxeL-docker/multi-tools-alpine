@@ -89,4 +89,5 @@ RUN apk update --no-cache \
     && sed -i "s/driver = \"overlay\"/driver = \"vfs\"/" /etc/containers/storage.conf \
     && pip3 install --no-cache-dir awxkit ansible-tower-cli \
     && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    && ln -s /usr/bin/python3 /usr/bin/python
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && helm plugin install "https://github.com/chartmuseum/helm-push"
