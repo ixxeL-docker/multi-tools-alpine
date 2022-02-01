@@ -90,4 +90,5 @@ RUN apk update --no-cache \
     && pip3 install --no-cache-dir awxkit ansible-tower-cli \
     && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     && ln -s /usr/bin/python3 /usr/bin/python \
-    && helm plugin install "https://github.com/chartmuseum/helm-push"
+    && helm plugin install "https://github.com/chartmuseum/helm-push" \
+    && helm plugin install "https://github.com/databus23/helm-diff" 
