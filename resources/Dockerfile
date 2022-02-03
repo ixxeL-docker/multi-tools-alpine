@@ -30,8 +30,7 @@ RUN apk update --no-cache \
     && ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
     && curl -sLO "https://releases.hashicorp.com/envconsul/${ENVCONSUL_VERSION}/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" \
     && unzip "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
-    && curl -fL "https://getcli.jfrog.io" | sh \
-    && mv jfrog /usr/local/bin \
+    && curl -fL "https://install-cli.jfrog.io" | sh \
     && curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin \
     && curl -sSfL "https://raw.githubusercontent.com/anchore/syft/main/install.sh" | sh -s -- -b /usr/local/bin \
     && npm install -g github-files-fetcher \
@@ -55,7 +54,7 @@ COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/kubectl-argo-rollouts \
                     /usr/local/bin/grype \
                     /usr/local/bin/syft \
-                    /usr/local/bin/jfrog \
+                    /usr/local/bin/jf \
                     /usr/local/bin/envconsul \
                     /usr/local/bin/vault \
                     /usr/local/bin/argocd \
