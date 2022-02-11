@@ -88,7 +88,7 @@ RUN apk update --no-cache \
     && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
     && rm -f /var/lib/containers/storage/libpod/bolt_state.db \
     && sed -i "s/driver = \"overlay\"/driver = \"vfs\"/" /etc/containers/storage.conf \
-    && pip3 install --no-cache-dir awxkit ansible-tower-cli \
+    && pip3 install --no-cache-dir awxkit ansible-tower-cli python-gitlab \
     && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && helm plugin install "https://github.com/chartmuseum/helm-push" \
