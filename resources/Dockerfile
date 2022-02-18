@@ -33,6 +33,8 @@ RUN apk update --no-cache \
     && curl -fL "https://install-cli.jfrog.io" | sh \
     && curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin \
     && curl -sSfL "https://raw.githubusercontent.com/anchore/syft/main/install.sh" | sh -s -- -b /usr/local/bin \
+    && curl -sSL -o /usr/local/bin/semver "https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver" \
+    && chmod +x /usr/local/bin/semver \
     && npm install -g github-files-fetcher \
     && fetcher --url="https://github.com/aquasecurity/trivy/tree/main/contrib" --out=/mnt
 
@@ -55,6 +57,7 @@ COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/grype \
                     /usr/local/bin/syft \
                     /usr/local/bin/jf \
+                    /usr/local/bin/semver \
                     /usr/local/bin/envconsul \
                     /usr/local/bin/vault \
                     /usr/local/bin/argocd \
