@@ -66,6 +66,10 @@ COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/
                     
 COPY --from=builder /mnt/contrib ./contrib
+
+WORKDIR /usr/app
+
+COPY ./get-gitlab-project-id.py .
                     
 RUN apk update --no-cache \
     && apk upgrade --no-cache \
