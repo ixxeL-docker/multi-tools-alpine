@@ -97,7 +97,7 @@ RUN apk update --no-cache \
     && sed -i "s/driver = \"overlay\"/driver = \"vfs\"/" /etc/containers/storage.conf \
     && pip3 install --no-cache-dir awxkit ansible-tower-cli python-gitlab \
     && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    && apk add github-cli glab --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    && apk add github-cli glab terraform --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && helm plugin install "https://github.com/chartmuseum/helm-push" \
     && helm plugin install "https://github.com/databus23/helm-diff" 
