@@ -36,7 +36,9 @@ RUN apk update --no-cache \
     && curl -sSL -o /usr/local/bin/semver "https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver" \
     && chmod +x /usr/local/bin/semver \
     && npm install -g github-files-fetcher \
-    && fetcher --url="https://github.com/aquasecurity/trivy/tree/main/contrib" --out=/mnt
+    && fetcher --url="https://github.com/aquasecurity/trivy/tree/main/contrib" --out=/mnt \
+    && curl -sL "https://github.com/vmware-tanzu/carvel-ytt/releases/latest/download/ytt-linux-amd64" -o /usr/local/bin/ytt \
+    && chmod +x /usr/local/bin/ytt
 
 FROM alpine:latest
 
@@ -63,6 +65,7 @@ COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/argocd \
                     /usr/local/bin/helm \
                     /usr/local/bin/kubectl \
+                    /usr/local/bin/ytt \
                     /usr/local/bin/
                     
 COPY --from=builder /mnt/contrib ./contrib
