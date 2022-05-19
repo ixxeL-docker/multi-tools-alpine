@@ -4,7 +4,7 @@ FROM alpine:latest AS builder
 
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 RUN apk update --no-cache
-RUN apk add curl npm tar gzip unzip --no-cache --update 
+RUN apk add curl npm tar --no-cache --update 
 RUN curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" 
 RUN chmod +x ./argocd-linux-amd64 
 RUN mv ./argocd-linux-amd64 /usr/local/bin/argocd 
@@ -15,9 +15,12 @@ RUN curl -sLO "https://github.com/argoproj/argo-workflows/releases/latest/downlo
 RUN gunzip argo-linux-amd64.gz 
 RUN chmod +x argo-linux-amd64 
 RUN mv ./argo-linux-amd64 /usr/local/bin/argo 
-RUN HELM_VERSION=$(curl -sSL "https://github.com/kubernetes/helm/releases/latest" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq | tail -1) 
-RUN curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz
-RUN tar -xzvf /tmp/helm.tar.gz -C /usr/local/bin
+RUN HELM_VERSION=$(curl -sSL https://github.com/kubernetes/helm/releases/latest | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq | tail -1) 
+RUN curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar xzv 
+RUN mv linux-amd64/helm /usr/local/bin/helm
+# RUN HELM_VERSION=$(curl -sSL "https://github.com/kubernetes/helm/releases/latest" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq | tail -1)
+# RUN curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz
+# RUN tar -xzvf /tmp/helm.tar.gz -C /usr/local/bin
 RUN ls -la /usr/local/bin
 RUN mv linux-amd64/helm /usr/local/bin/helm 
 RUN curl -sSL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" -o /tmp/oc.tar.gz 
