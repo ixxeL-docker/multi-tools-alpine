@@ -2,43 +2,43 @@ FROM gcr.io/kaniko-project/executor:latest as kaniko
 
 FROM alpine:latest AS builder
 
-RUN apk update --no-cache \
-    && apk add curl npm --no-cache --update \
-    && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
-    && chmod +x ./argocd-linux-amd64 \
-    && mv ./argocd-linux-amd64 /usr/local/bin/argocd \
-    && curl -sLO "https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64" \
-    && chmod +x ./kubectl-argo-rollouts-linux-amd64 \
-    && mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts \
-    && curl -sLO "https://github.com/argoproj/argo-workflows/releases/latest/download/argo-linux-amd64.gz" \
-    && gunzip argo-linux-amd64.gz \
-    && chmod +x argo-linux-amd64 \
-    && mv ./argo-linux-amd64 /usr/local/bin/argo \
-    && HELM_VERSION=$(curl -sSL "https://github.com/kubernetes/helm/releases/latest" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq | tail -1) \
-    && curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar xzv \
-    && mv linux-amd64/helm /usr/local/bin/helm \
-    && curl -sSL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" -o /tmp/oc.tar.gz \
-    && tar -xzvf /tmp/oc.tar.gz -C /usr/local/bin \
-    && rm /tmp/oc.tar.gz \
-    && KUBECTL_VERSION=$(curl -s "https://storage.googleapis.com/kubernetes-release/release/stable.txt") \
-    && curl -sSLO "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
-    && chmod +x ./kubectl \
-    && mv ./kubectl /usr/local/bin/kubectl \
-    && VAULT_VERSION=$(curl -sSL "https://releases.hashicorp.com/vault" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
-    && curl -sLO "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" \
-    && unzip "./vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin \
-    && ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
-    && curl -sLO "https://releases.hashicorp.com/envconsul/${ENVCONSUL_VERSION}/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" \
-    && unzip "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
-    && curl -fL "https://install-cli.jfrog.io" | sh \
-    && curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin \
-    && curl -sSfL "https://raw.githubusercontent.com/anchore/syft/main/install.sh" | sh -s -- -b /usr/local/bin \
-    && curl -sSL -o /usr/local/bin/semver "https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver" \
-    && chmod +x /usr/local/bin/semver \
-    && npm install -g github-files-fetcher \
-    && fetcher --url="https://github.com/aquasecurity/trivy/tree/main/contrib" --out=/mnt \
-    && curl -sL "https://github.com/vmware-tanzu/carvel-ytt/releases/latest/download/ytt-linux-amd64" -o /usr/local/bin/ytt \
-    && chmod +x /usr/local/bin/ytt
+RUN apk update --no-cache
+RUN apk add curl npm --no-cache --update 
+RUN curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" 
+RUN chmod +x ./argocd-linux-amd64 
+RUN mv ./argocd-linux-amd64 /usr/local/bin/argocd 
+RUN curl -sLO "https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64" 
+RUN chmod +x ./kubectl-argo-rollouts-linux-amd64 
+RUN mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts 
+RUN curl -sLO "https://github.com/argoproj/argo-workflows/releases/latest/download/argo-linux-amd64.gz" 
+RUN gunzip argo-linux-amd64.gz 
+RUN chmod +x argo-linux-amd64 
+RUN mv ./argo-linux-amd64 /usr/local/bin/argo 
+RUN HELM_VERSION=$(curl -sSL "https://github.com/kubernetes/helm/releases/latest" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq | tail -1) 
+RUN curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar xzv 
+RUN mv linux-amd64/helm /usr/local/bin/helm 
+RUN curl -sSL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" -o /tmp/oc.tar.gz 
+RUN tar -xzvf /tmp/oc.tar.gz -C /usr/local/bin 
+RUN rm /tmp/oc.tar.gz 
+RUN KUBECTL_VERSION=$(curl -s "https://storage.googleapis.com/kubernetes-release/release/stable.txt") 
+RUN curl -sSLO "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" 
+RUN chmod +x ./kubectl 
+RUN mv ./kubectl /usr/local/bin/kubectl 
+RUN VAULT_VERSION=$(curl -sSL "https://releases.hashicorp.com/vault" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') 
+RUN curl -sLO "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" 
+RUN unzip "./vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin 
+RUN ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') 
+RUN curl -sLO "https://releases.hashicorp.com/envconsul/${ENVCONSUL_VERSION}/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" 
+RUN unzip "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin 
+RUN curl -fL "https://install-cli.jfrog.io" | sh 
+RUN curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin 
+RUN curl -sSfL "https://raw.githubusercontent.com/anchore/syft/main/install.sh" | sh -s -- -b /usr/local/bin 
+RUN curl -sSL -o /usr/local/bin/semver "https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver" 
+RUN chmod +x /usr/local/bin/semver 
+RUN npm install -g github-files-fetcher 
+RUN fetcher --url="https://github.com/aquasecurity/trivy/tree/main/contrib" --out=/mnt 
+RUN curl -sL "https://github.com/vmware-tanzu/carvel-ytt/releases/latest/download/ytt-linux-amd64" -o /usr/local/bin/ytt 
+RUN chmod +x /usr/local/bin/ytt
 
 FROM alpine:latest
 
