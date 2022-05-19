@@ -3,7 +3,7 @@ FROM gcr.io/kaniko-project/executor:latest as kaniko
 FROM alpine:latest AS builder
 
 RUN apk update --no-cache \
-    && apk add curl npm --no-cache --update \
+    && apk add curl npm tar --no-cache --update \
     && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
     && chmod +x ./argocd-linux-amd64 \
     && mv ./argocd-linux-amd64 /usr/local/bin/argocd \
@@ -88,7 +88,6 @@ RUN apk update --no-cache \
     gettext \
     bash \
     jq \
-    yq \
     python3 \
     py3-pip \
     bind-tools \
@@ -100,7 +99,7 @@ RUN apk update --no-cache \
     && sed -i "s/driver = \"overlay\"/driver = \"vfs\"/" /etc/containers/storage.conf \
     && pip3 install --no-cache-dir awxkit ansible-tower-cli python-gitlab \
     && apk add trivy --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    && apk add github-cli glab terraform --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    && apk add github-cli glab terraform yq --no-cache --update --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && helm plugin install "https://github.com/chartmuseum/helm-push" \
     && helm plugin install "https://github.com/databus23/helm-diff" 
