@@ -108,27 +108,27 @@ jobs:
         format: table
         template: ''
         skip-dirs: /usr/local/bin,/usr/bin
-    - name: Transfer image with Skopeo
-      id: transfer-image-version
-      env:
-        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/skopeo-copy@main
-      with:
-        src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
-        dst-img: ${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}
-        format: v2s2
-        src-transport: containers-storage
-        dst-transport: docker
-        dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
-    - name: Transfer image with Skopeo (latest)
-      id: transfer-image-latest
-      env:
-        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/skopeo-copy@main
-      with:
-        src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
-        dst-img: ${REPOSITORY}/${IMAGE_NAME}:latest
-        format: v2s2
-        src-transport: containers-storage
-        dst-transport: docker
-        dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
+#     - name: Transfer image with Skopeo
+#       id: transfer-image-version
+#       env:
+#         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+#       uses: ixxeL-actions/skopeo-copy@main
+#       with:
+#         src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
+#         dst-img: ${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}
+#         format: v2s2
+#         src-transport: containers-storage
+#         dst-transport: docker
+#         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
+#     - name: Transfer image with Skopeo (latest)
+#       id: transfer-image-latest
+#       env:
+#         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+#       uses: ixxeL-actions/skopeo-copy@main
+#       with:
+#         src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
+#         dst-img: ${REPOSITORY}/${IMAGE_NAME}:latest
+#         format: v2s2
+#         src-transport: containers-storage
+#         dst-transport: docker
+#         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
