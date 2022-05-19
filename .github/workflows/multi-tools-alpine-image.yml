@@ -60,34 +60,46 @@ jobs:
         IMAGE_VERSION=${VERSION}-${{ github.run_number }}
         echo ::set-output name=IMAGE_VERSION::${IMAGE_VERSION}
         echo -e "${CYAN}[ INFO ] > Image version for ${IMAGE_NAME} is ${IMAGE_VERSION}.${BLANK}"
-    - name: Build docker image with buildah
+#     - name: Build docker image with buildah
+#       id: build-image
+#       env:
+#         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+#       uses: ixxeL-actions/buildah-bud@main
+#       with:
+#         tag: ${IMAGE_NAME}:${IMAGE_VERSION}
+#         file: '""'
+#         format: oci
+#         build-arg: ''
+#         working-dir: ${WORKING_DIR}
+#     - name: Archive docker image for CVE scan
+#       id: archive-image
+#       env:
+#         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+#       uses: ixxeL-actions/buildah-push@main
+#       with:
+#         image-id: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
+#         transport: docker-archive
+#         destination: /tmp/${IMAGE_NAME}-${IMAGE_VERSION}.tar
+#         format: '""'
+    - name: Kaniko build docker image
       id: build-image
       env:
         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/buildah-bud@main
+      uses: ixxeL-actions/kaniko-build@main
       with:
-        tag: ${IMAGE_NAME}:${IMAGE_VERSION}
-        file: '""'
-        format: oci
+        img-name: ${IMAGE_NAME}
+        tag: ${IMAGE_VERSION}
+        file: 'resources/Dockerfile'
         build-arg: ''
-        working-dir: ${WORKING_DIR}
-    - name: Archive docker image for CVE scan
-      id: archive-image
-      env:
-        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/buildah-push@main
-      with:
-        image-id: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
-        transport: docker-archive
-        destination: /tmp/${IMAGE_NAME}-${IMAGE_VERSION}.tar
-        format: '""'
+        working-dir: .
+        target-dir: /tmp
     - name: Security scan for docker image (Grype)
       id: scan-image1
       env:
         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
       uses: ixxeL-actions/grype-scan@main
       with:
-        image-ref: /tmp/${IMAGE_NAME}-${IMAGE_VERSION}.tar
+        image-ref: /tmp/${IMAGE_NAME}.tar
         transport: docker-archive
         fail-on: '""'
         output: table
@@ -101,7 +113,7 @@ jobs:
       uses: ixxeL-actions/trivy-scan@main
       with:
         scan-type: image
-        input: /tmp/${IMAGE_NAME}-${IMAGE_VERSION}.tar
+        input: /tmp/${IMAGE_NAME}.tar
         security-checks: vuln,config
         severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
         output: '""'
