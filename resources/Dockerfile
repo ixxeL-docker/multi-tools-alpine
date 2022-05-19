@@ -2,6 +2,7 @@ FROM gcr.io/kaniko-project/executor:latest as kaniko
 
 FROM alpine:latest AS builder
 
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 RUN apk update --no-cache
 RUN apk add curl npm tar --no-cache --update 
 RUN curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" 
