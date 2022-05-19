@@ -4,7 +4,7 @@ FROM alpine:latest AS builder
 
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 RUN apk update --no-cache
-RUN apk add curl npm tar --no-cache --update 
+RUN apk add curl npm tar gzip unzip --no-cache --update 
 RUN curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" 
 RUN chmod +x ./argocd-linux-amd64 
 RUN mv ./argocd-linux-amd64 /usr/local/bin/argocd 
