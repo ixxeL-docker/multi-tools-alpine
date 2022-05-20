@@ -4,6 +4,7 @@ FROM alpine:latest AS builder
 
 ARG HELM_VERSION=v3.9.0
 ARG VAULT_VERSION=1.10.3
+ARG ENVCONSUL_VERSION=0.12.1
 
 RUN apk update --no-cache \
     && apk add curl npm tar unzip --no-cache --update \
@@ -30,7 +31,7 @@ RUN apk update --no-cache \
 #     && VAULT_VERSION=$(curl -sSL "https://releases.hashicorp.com/vault" | grep -oE '/v?[0-9]+\.[0-9]+\.[0-9]+/?' | head -1 | sed 's/\///g') \
     && curl -sLO "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" \
     && unzip "./vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin \
-    && ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
+#     && ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
     && curl -sLO "https://releases.hashicorp.com/envconsul/${ENVCONSUL_VERSION}/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" \
     && unzip "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
     && curl -fL "https://install-cli.jfrog.io" | sh \
