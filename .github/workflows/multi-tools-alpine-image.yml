@@ -111,6 +111,8 @@ jobs:
 #         retention-days: 1
     - name: Transfer image with Skopeo (version)
       id: transfer-image-version
+      env:
+        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
       uses: ixxeL-actions/skopeo-copy@main
       with:
         src-img: /tmp/${IMAGE_NAME}.tar
@@ -121,6 +123,8 @@ jobs:
         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
     - name: Transfer image with Skopeo (latest)
       id: transfer-image-latest
+      env:
+        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
       uses: ixxeL-actions/skopeo-copy@main
       with:
         src-img: /tmp/${IMAGE_NAME}.tar
