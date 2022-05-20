@@ -1,5 +1,3 @@
-# FROM gcr.io/kaniko-project/executor:latest as kaniko
-
 FROM alpine:latest AS builder
 
 ARG HELM_VERSION=v3.9.0
