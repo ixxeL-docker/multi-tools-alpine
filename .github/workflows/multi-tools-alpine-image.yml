@@ -105,8 +105,8 @@ jobs:
     - name: Save Docker image
       uses: actions/upload-artifact@master
       with:
-        name: image-tarball
-        path: /tmp/${IMAGE_NAME}.tar
+        name: ${IMAGE_NAME}.tar
+        path: /tmp/**/*
         retention-days: 1
         
   deliver:
