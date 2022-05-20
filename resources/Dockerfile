@@ -30,10 +30,10 @@ RUN apk update --no-cache \
     && mv ./kubectl /usr/local/bin/kubectl \
 #     && VAULT_VERSION=$(curl -sSL "https://releases.hashicorp.com/vault" | grep -oE '/v?[0-9]+\.[0-9]+\.[0-9]+/?' | head -1 | sed 's/\///g') \
     && curl -sLO "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" \
-    && unzip "./vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin \
+    && unzip -o "./vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin \
 #     && ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
     && curl -sLO "https://releases.hashicorp.com/envconsul/${ENVCONSUL_VERSION}/envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" \
-    && unzip "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
+    && unzip -o "./envconsul_${ENVCONSUL_VERSION}_linux_amd64.zip" -d /usr/local/bin \
     && curl -fL "https://install-cli.jfrog.io" | sh \
     && curl -sSfL "https://raw.githubusercontent.com/anchore/grype/main/install.sh" | sh -s -- -b /usr/local/bin \
     && curl -sSfL "https://raw.githubusercontent.com/anchore/syft/main/install.sh" | sh -s -- -b /usr/local/bin \
