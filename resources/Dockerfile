@@ -15,7 +15,7 @@ RUN gunzip argo-linux-amd64.gz
 RUN chmod +x argo-linux-amd64 
 RUN mv ./argo-linux-amd64 /usr/local/bin/argo 
 RUN HELM_VERSION=$(curl -sSL "https://github.com/kubernetes/helm/releases/latest" | grep -oE "v[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq | tail -1) 
-RUN curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar xzv 
+RUN curl -sSL "https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz" | tar xzv 
 RUN mv linux-amd64/helm /usr/local/bin/helm
 # RUN HELM_VERSION=$(curl -sSL "https://github.com/kubernetes/helm/releases/latest" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq | tail -1)
 # RUN curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -o /tmp/helm.tar.gz
