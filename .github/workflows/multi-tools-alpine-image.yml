@@ -102,43 +102,63 @@ jobs:
 #         format: table
 #         template: ''
 #         skip-dirs: /usr/local/bin,/usr/bin
-    - name: Save Docker image
-      uses: actions/upload-artifact@v3
-      with:
-        name: image-tarball
-        path: /tmp/*.tar
-        if-no-files-found: error
-        retention-days: 1
-        
-  deliver:
-    needs: [build]
-    runs-on: ubuntu-latest
-    container:
-      image: ixxel/multi-tools-alpine:latest
-    defaults:
-      run:
-        shell: bash
-    env:
-      IMAGE_VERSION: ${{ needs.build.outputs.img-version }}
-    strategy:
-      matrix:
-        versions: ["${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}", "${REPOSITORY}/${IMAGE_NAME}:latest"]
-    steps:
-    - name: Retrieve saved Docker image
-      uses: actions/download-artifact@v2
-      with:
-        name: image-tarball
-        path: /tmp/*.tar
-    - name: Transfer image with Skopeo
-      id: transfer-image
+#     - name: Save Docker image
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: image-tarball
+#         path: /tmp/*.tar
+#         if-no-files-found: error
+#         retention-days: 1
+    - name: Transfer image with Skopeo (version)
+      id: transfer-image-version
       uses: ixxeL-actions/skopeo-copy@main
       with:
         src-img: /tmp/${IMAGE_NAME}.tar
-        dst-img: ${{ matrix.versions }}
+        dst-img: ${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}
         format: v2s2
         src-transport: docker-archive
         dst-transport: docker
         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
+    - name: Transfer image with Skopeo (latest)
+      id: transfer-image-latest
+      uses: ixxeL-actions/skopeo-copy@main
+      with:
+        src-img: /tmp/${IMAGE_NAME}.tar
+        dst-img: ${REPOSITORY}/${IMAGE_NAME}:latest
+        format: v2s2
+        src-transport: docker-archive
+        dst-transport: docker
+        dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
+        
+#   deliver:
+#     needs: [build]
+#     runs-on: ubuntu-latest
+#     container:
+#       image: ixxel/multi-tools-alpine:latest
+#     defaults:
+#       run:
+#         shell: bash
+#     env:
+#       IMAGE_VERSION: ${{ needs.build.outputs.img-version }}
+#     strategy:
+#       matrix:
+#         versions: ["${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}", "${REPOSITORY}/${IMAGE_NAME}:latest"]
+#     steps:
+#     - name: Retrieve saved Docker image
+#       uses: actions/download-artifact@v2
+#       with:
+#         name: image-tarball
+#         path: /tmp/*.tar
+#     - name: Transfer image with Skopeo
+#       id: transfer-image
+#       uses: ixxeL-actions/skopeo-copy@main
+#       with:
+#         src-img: /tmp/${IMAGE_NAME}.tar
+#         dst-img: ${{ matrix.versions }}
+#         format: v2s2
+#         src-transport: docker-archive
+#         dst-transport: docker
+#         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
 #     - name: Transfer image with Skopeo
 #       id: transfer-image-version
 #       env:
