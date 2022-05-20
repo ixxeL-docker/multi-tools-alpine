@@ -40,6 +40,7 @@ jobs:
         format: json
         treshold: error
         working-dir: ${WORKING_DIR}
+        
   build:
     needs: [test]
     runs-on: ubuntu-latest
@@ -49,6 +50,8 @@ jobs:
     defaults:
       run:
         shell: bash
+    outputs:
+      img-version: ${{ steps.build-version.outputs.IMAGE_VERSION }}
     steps:
     - uses: actions/checkout@v2
     - name: Build image version
@@ -60,34 +63,25 @@ jobs:
         IMAGE_VERSION=${VERSION}-${{ github.run_number }}
         echo ::set-output name=IMAGE_VERSION::${IMAGE_VERSION}
         echo -e "${CYAN}[ INFO ] > Image version for ${IMAGE_NAME} is ${IMAGE_VERSION}.${BLANK}"
-    - name: Build docker image with buildah
+    - name: Kaniko build docker image
       id: build-image
       env:
         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/buildah-bud@main
+      uses: ixxeL-actions/kaniko-build@main
       with:
-        tag: ${IMAGE_NAME}:${IMAGE_VERSION}
-        file: '""'
-        format: oci
+        img-name: ${IMAGE_NAME}
+        tag: ${IMAGE_VERSION}
+        file: 'resources/Dockerfile'
         build-arg: ''
-        working-dir: ${WORKING_DIR}
-    - name: Archive docker image for CVE scan
-      id: archive-image
-      env:
-        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/buildah-push@main
-      with:
-        image-id: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
-        transport: docker-archive
-        destination: /tmp/${IMAGE_NAME}-${IMAGE_VERSION}.tar
-        format: '""'
+        working-dir: .
+        target-dir: /tmp
     - name: Security scan for docker image (Grype)
       id: scan-image1
       env:
         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
       uses: ixxeL-actions/grype-scan@main
       with:
-        image-ref: /tmp/${IMAGE_NAME}-${IMAGE_VERSION}.tar
+        image-ref: /tmp/${IMAGE_NAME}.tar
         transport: docker-archive
         fail-on: '""'
         output: table
@@ -101,34 +95,70 @@ jobs:
       uses: ixxeL-actions/trivy-scan@main
       with:
         scan-type: image
-        input: /tmp/${IMAGE_NAME}-${IMAGE_VERSION}.tar
+        input: /tmp/${IMAGE_NAME}.tar
         security-checks: vuln,config
         severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
         output: '""'
         format: table
         template: ''
         skip-dirs: /usr/local/bin,/usr/bin
+    - name: Save Docker image
+      uses: actions/upload-artifact@master
+      with:
+        name: image-tarball
+        path: /tmp/${IMAGE_NAME}.tar
+        retention-days: 1
+        
+  deliver:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: ixxel/multi-tools-alpine:latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      IMAGE_VERSION: ${{ needs.build.outputs.img-version }}
+    strategy:
+      matrix:
+        versions: ["${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}", "${REPOSITORY}/${IMAGE_NAME}:latest"]
+    steps:
+    - name: Retrieve saved Docker image
+      uses: actions/download-artifact@v2
+      with:
+        name: image-tarball
+        path: /tmp/${IMAGE_NAME}.tar
     - name: Transfer image with Skopeo
-      id: transfer-image-version
-      env:
-        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+      id: transfer-image
       uses: ixxeL-actions/skopeo-copy@main
       with:
-        src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
-        dst-img: ${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}
+        src-img: /tmp/${IMAGE_NAME}.tar
+        dst-img: ${{ matrix.versions }}
         format: v2s2
-        src-transport: containers-storage
+        src-transport: docker-archive
         dst-transport: docker
         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
-    - name: Transfer image with Skopeo (latest)
-      id: transfer-image-latest
-      env:
-        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/skopeo-copy@main
-      with:
-        src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
-        dst-img: ${REPOSITORY}/${IMAGE_NAME}:latest
-        format: v2s2
-        src-transport: containers-storage
-        dst-transport: docker
-        dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
+#     - name: Transfer image with Skopeo
+#       id: transfer-image-version
+#       env:
+#         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+#       uses: ixxeL-actions/skopeo-copy@main
+#       with:
+#         src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
+#         dst-img: ${REPOSITORY}/${IMAGE_NAME}:${IMAGE_VERSION}
+#         format: v2s2
+#         src-transport: containers-storage
+#         dst-transport: docker
+#         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
+#     - name: Transfer image with Skopeo (latest)
+#       id: transfer-image-latest
+#       env:
+#         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+#       uses: ixxeL-actions/skopeo-copy@main
+#       with:
+#         src-img: localhost/${IMAGE_NAME}:${IMAGE_VERSION}
+#         dst-img: ${REPOSITORY}/${IMAGE_NAME}:latest
+#         format: v2s2
+#         src-transport: containers-storage
+#         dst-transport: docker
+#         dst-creds: ixxel:${{ secrets.DOCKER_IO_PWD }}
