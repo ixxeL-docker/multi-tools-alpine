@@ -1,4 +1,4 @@
-FROM gcr.io/kaniko-project/executor:latest as kaniko
+# FROM gcr.io/kaniko-project/executor:latest as kaniko
 
 FROM alpine:latest AS builder
 
@@ -55,7 +55,9 @@ ENV TZ="Europe/Paris" \
     
 COPY --from=ixxel/musl-dns-hack-alpine /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
 
-COPY --from=kaniko /kaniko/executor /usr/local/bin/executor
+# COPY --from=kaniko /kaniko/executor /usr/local/bin/executor
+
+COPY --from=gcr.io/kaniko-project/executor:latest /kaniko/executor /usr/local/bin/executor
 
 COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/argo \
