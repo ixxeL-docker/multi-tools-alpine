@@ -2,7 +2,7 @@ FROM gcr.io/kaniko-project/executor:latest as kaniko
 
 FROM alpine:latest AS builder
 
-ARG HELM_VERSION=3.9.0
+ARG HELM_VERSION=v3.9.0
 ARG VAULT_VERSION=1.10.3
 
 RUN apk update --no-cache \
