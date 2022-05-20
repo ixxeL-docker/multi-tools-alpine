@@ -3,7 +3,7 @@ FROM gcr.io/kaniko-project/executor:latest as kaniko
 FROM alpine:latest AS builder
 
 RUN apk update --no-cache \
-    && apk add curl npm tar --no-cache --update \
+    && apk add curl npm tar unzip --no-cache --update \
     && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
     && chmod +x ./argocd-linux-amd64 \
     && mv ./argocd-linux-amd64 /usr/local/bin/argocd \
