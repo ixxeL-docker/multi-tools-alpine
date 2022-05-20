@@ -2,6 +2,9 @@ FROM gcr.io/kaniko-project/executor:latest as kaniko
 
 FROM alpine:latest AS builder
 
+ARG HELM_VERSION=3.9.0
+ARG VAULT_VERSION=1.10.3
+
 RUN apk update --no-cache \
     && apk add curl npm tar unzip --no-cache --update \
     && curl -sLO "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
@@ -15,9 +18,7 @@ RUN apk update --no-cache \
     && chmod +x argo-linux-amd64 \
     && mv ./argo-linux-amd64 /usr/local/bin/argo \
 #     && HELM_VERSION=$(curl -sSL "https://github.com/kubernetes/helm/releases/latest" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sort | uniq | tail -1) \
-#     && curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar xzv \
-#     && mv linux-amd64/helm /usr/local/bin/helm \
-    && curl -sSL "https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz" | tar xzv \
+    && curl -sSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar xzv \
     && mv linux-amd64/helm /usr/local/bin/helm \
     && curl -sSL "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz" -o /tmp/oc.tar.gz \
     && tar -xzvf /tmp/oc.tar.gz -C /usr/local/bin \
@@ -26,7 +27,7 @@ RUN apk update --no-cache \
     && curl -sSLO "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
     && chmod +x ./kubectl \
     && mv ./kubectl /usr/local/bin/kubectl \
-    && VAULT_VERSION=$(curl -sSL "https://releases.hashicorp.com/vault" | grep -oE '/v?[0-9]+\.[0-9]+\.[0-9]+/?' | head -1 | sed 's/\///g') \
+#     && VAULT_VERSION=$(curl -sSL "https://releases.hashicorp.com/vault" | grep -oE '/v?[0-9]+\.[0-9]+\.[0-9]+/?' | head -1 | sed 's/\///g') \
     && curl -sLO "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip" \
     && unzip "./vault_${VAULT_VERSION}_linux_amd64.zip" -d /usr/local/bin \
     && ENVCONSUL_VERSION=$(curl -sSL "https://releases.hashicorp.com/envconsul" | grep -oE '/[0-9]+\.[0-9]+\.[0-9]+/' | head -1 | sed 's/\///g') \
