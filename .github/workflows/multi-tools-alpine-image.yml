@@ -103,10 +103,11 @@ jobs:
 #         template: ''
 #         skip-dirs: /usr/local/bin,/usr/bin
     - name: Save Docker image
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v3
       with:
-        name: ${IMAGE_NAME}.tar
-        path: /tmp/**/*
+        name: image-tarball
+        path: /tmp/*.tar
+        if-no-files-found: error
         retention-days: 1
         
   deliver:
@@ -127,7 +128,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: image-tarball
-        path: /tmp/${IMAGE_NAME}.tar
+        path: /tmp/*.tar
     - name: Transfer image with Skopeo
       id: transfer-image
       uses: ixxeL-actions/skopeo-copy@main
