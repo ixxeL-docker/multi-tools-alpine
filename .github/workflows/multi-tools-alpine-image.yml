@@ -88,20 +88,20 @@ jobs:
         scope: AllLayers
         template: '""'
         verbose: ''
-    - name: Security scan for docker image (Trivy)
-      id: scan-image2
-      env:
-        IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
-      uses: ixxeL-actions/trivy-scan@main
-      with:
-        scan-type: image
-        input: /tmp/${IMAGE_NAME}.tar
-        security-checks: vuln,config
-        severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-        output: '""'
-        format: table
-        template: ''
-        skip-dirs: /usr/local/bin,/usr/bin
+#     - name: Security scan for docker image (Trivy)
+#       id: scan-image2
+#       env:
+#         IMAGE_VERSION: ${{ steps.build-version.outputs.IMAGE_VERSION }}
+#       uses: ixxeL-actions/trivy-scan@main
+#       with:
+#         scan-type: image
+#         input: /tmp/${IMAGE_NAME}.tar
+#         security-checks: vuln,config
+#         severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+#         output: '""'
+#         format: table
+#         template: ''
+#         skip-dirs: /usr/local/bin,/usr/bin
     - name: Save Docker image
       uses: actions/upload-artifact@master
       with:
