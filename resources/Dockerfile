@@ -53,6 +53,10 @@ ENV TZ="Europe/Paris" \
     IMG_VERSION="2.0.0" \
     PATH="/kaniko:$PATH"
     
+WORKDIR /usr/app
+
+COPY ./get-gitlab-project-id.py .
+    
 COPY --from=ixxel/musl-dns-hack-alpine /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
 
 # COPY --from=kaniko /kaniko/executor /usr/local/bin/executor
@@ -75,10 +79,6 @@ COPY --from=builder /usr/local/bin/oc \
                     /usr/local/bin/
                     
 COPY --from=builder /mnt/contrib ./contrib
-
-WORKDIR /usr/app
-
-COPY ./get-gitlab-project-id.py .
                     
 RUN apk update --no-cache \
     && apk upgrade --no-cache \
